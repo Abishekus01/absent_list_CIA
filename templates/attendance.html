@@ -23,7 +23,7 @@
     <div class="table-wrapper">
       <table>
         <tr>
-          <th>Present</th>
+          <th>Absent</th>
           <th>Seat No</th>
           <th>Reg No</th>
           <th>Name</th>
@@ -31,13 +31,9 @@
           <th>Status</th>
         </tr>
 
-        {% set present_count = 0 %}
-        {% set absent_count = 0 %}
-        {% set absent_list = [] %}
-
         {% for s in tables %}
         <tr {% if s.Present == 'A' %} style="background:#3f1d1d; color:#f87171;" {% endif %}>
-          
+
           <td>
             <input type="checkbox"
                    name="present_{{ loop.index0 }}"
@@ -53,11 +49,8 @@
           <td>
             {% if s.Present == 'A' %}
               ❌ Absent
-              {% set absent_count = absent_count + 1 %}
-              {% set _ = absent_list.append(s) %}
             {% else %}
               ✔ Present
-              {% set present_count = present_count + 1 %}
             {% endif %}
           </td>
 

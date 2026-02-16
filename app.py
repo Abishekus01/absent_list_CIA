@@ -132,7 +132,7 @@ def hall_allocation():
 def attendance():
     global hall_df
 
-    if hall_df is None or hall_df.empty:
+    if hall_df is None:
         return "No hall allocated"
 
     if request.method == "POST":
@@ -141,6 +141,11 @@ def attendance():
             hall_df.at[index, "Present"] = "A" if value == "A" else "P"
 
         return redirect(url_for("attendance"))
+
+    # ✅ CALCULATE COUNTS IN PYTHON
+    present_count = len(hall_df[hall_df["Present"] == "P"])
+    absent_count = len(hall_df[hall_df["Present"] == "A"])
+    absent_list = hall_df[hall_df["Present"] == "A"].to_dict(orient="records")
 
     hall_info = {
         "hall": hall_df["Hall"].iloc[0],
@@ -152,8 +157,12 @@ def attendance():
         "attendance.html",
         tables=hall_df.to_dict(orient="records"),
         columns=hall_df.columns,
-        data=hall_info
+        data=hall_info,
+        present_count=present_count,
+        absent_count=absent_count,
+        absent_list=absent_list
     )
+
 
 # ---------------- DOWNLOAD ABSENT XLSX ----------------
 @app.route("/download_absent")
