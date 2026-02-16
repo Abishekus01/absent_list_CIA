@@ -1,91 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Attendance Sheet</title>
+  <title>Attendance</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<div class="container">
+<h2>Exam Attendance Sheet</h2>
 
-  <h2>Exam Attendance Sheet</h2>
+<p><b>Hall:</b> {{ data.hall }}</p>
+<p><b>Date:</b> {{ data.exam_date }}</p>
+<p><b>Slot:</b> {{ data.slot }}</p>
 
-  <!-- 📌 EXAM METADATA -->
-  <div class="meta">
-    <p><b>Date:</b> {{ data.exam_date }}</p>
-    <p><b>Hall:</b> {{ data.hall }}</p>
-    <p><b>Slot:</b> {{ data.slot }}</p>
-    <p><b>Subject:</b> {{ data.subject_name }} ({{ data.subject_code }})</p>
-    <p><b>Staff:</b> {{ data.staff_name }} ({{ data.staff_id }})</p>
-  </div>
+<form method="post">
 
-  <form method="POST">
+<table border="1">
+  <tr>
+    {% for col in columns %}
+      <th>{{ col }}</th>
+    {% endfor %}
+    <th>Absent</th>
+  </tr>
 
-    <!-- 📊 SCROLLABLE STUDENT TABLE -->
-    <div class="table-wrapper">
-      <table>
-        <tr>
-          <th>Present</th>
-          <th>Reg No</th>
-          <th>Name</th>
-          <th>Dept</th>
-          <th>Year</th>
-          <th>Sem</th>
-          <th>Section</th>
-        </tr>
+  {% for row in tables %}
+  <tr>
+    {% for col in columns %}
+      <td>{{ row[col] }}</td>
+    {% endfor %}
+    <td>
+      <input type="checkbox" name="present_{{ loop.index0 }}" value="A">
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 
-        {% for s in students %}
-        <tr>
-          <td><input type="checkbox" name="present" value="{{ s.reg }}"></td>
-          <td>{{ s.reg }}</td>
-          <td>{{ s.name }}</td>
-          <td>{{ s.dept }}</td>
-          <td>{{ s.year }}</td>
-          <td>{{ s.sem }}</td>
-          <td>{{ s.section }}</td>
-        </tr>
-        {% endfor %}
-      </table>
-    </div>
+<br>
+<button type="submit">Save Attendance</button>
 
-    <button type="submit">Submit Attendance</button>
-  </form>
+</form>
 
-  <!-- 📉 RESULT BLOCK -->
-  {% if data.absent_count is defined %}
-    <h3>Present: {{ data.present_count }} | Absent: {{ data.absent_count }}</h3>
+<br>
 
-    <h3>Absent Students</h3>
+<a href="{{ url_for('download_absent') }}">
+  <button>Download Absent XLSX</button>
+</a>
 
-    <div class="table-wrapper">
-      <table>
-        <tr>
-          <th>Reg No</th>
-          <th>Name</th>
-          <th>Section</th>
-        </tr>
+<br><br>
 
-        {% for a in data.absent %}
-        <tr>
-          <td>{{ a.reg }}</td>
-          <td>{{ a.name }}</td>
-          <td>{{ a.section }}</td>
-        </tr>
-        {% endfor %}
-      </table>
-    </div>
-
-    <div class="action-buttons">
-      <a href="/download_absent"><button type="button">Download Absent CSV</button></a>
-    </div>
-  {% endif %}
-
-  <div class="action-buttons">
-    <a href="/dashboard"><button type="button">Back</button></a>
-    <a href="/logout"><button type="button">Logout</button></a>
-  </div>
-
-</div>
+<a href="{{ url_for('dashboard') }}">
+  <button>Back to Dashboard</button>
+</a>
 
 </body>
 </html>

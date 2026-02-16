@@ -48,7 +48,6 @@ def upload_master():
 
         master_df = pd.read_excel(path)
 
-        # ✅ Flexible column handling
         master_df.columns = master_df.columns.str.strip().str.lower()
 
         column_map = {
@@ -75,7 +74,7 @@ def upload_master():
 
     return render_template("upload_master.html")
 
-# ---------------- HALL ALLOCATION (MULTI SUBJECT SAME HALL) ----------------
+# ---------------- HALL ALLOCATION ----------------
 @app.route("/hall_allocation", methods=["POST"])
 def hall_allocation():
     global master_df, hall_df
@@ -87,7 +86,6 @@ def hall_allocation():
     exam_date = request.form["date"]
     slot = request.form["slot"]
 
-    # multiple subjects selected
     subjects = request.form.getlist("subject")
 
     combined_list = []
@@ -100,9 +98,18 @@ def hall_allocation():
     if not combined_list:
         return "No subjects selected"
 
-    merged_df = pd.concat(combined_list, ignore_index=True)
+    # 🔁 TRUE ALTERNATE SEATING
+    grouped = [df.reset_index(drop=True) for df in combined_list]
+    max_len = max(len(df) for df in grouped)
 
-    # 🔁 Alternate seating by subject
+    rows = []
+    for i in range(max_len):
+        for df in grouped:
+            if i < len(df):
+                rows.append(df.iloc[i])
+
+    merged_df = pd.DataFrame(rows).reset_index(drop=True)
+
     hall_data = []
     for i in range(len(merged_df)):
         hall_data.append({
@@ -125,7 +132,7 @@ def hall_allocation():
 def attendance():
     global hall_df
 
-    if hall_df is None:
+    if hall_df is None or hall_df.empty:
         return "No hall allocated"
 
     if request.method == "POST":
@@ -135,10 +142,17 @@ def attendance():
 
         return redirect(url_for("attendance"))
 
+    hall_info = {
+        "hall": hall_df["Hall"].iloc[0],
+        "exam_date": hall_df["Date"].iloc[0],
+        "slot": hall_df["Slot"].iloc[0]
+    }
+
     return render_template(
         "attendance.html",
         tables=hall_df.to_dict(orient="records"),
-        columns=hall_df.columns
+        columns=hall_df.columns,
+        data=hall_info
     )
 
 # ---------------- DOWNLOAD ABSENT XLSX ----------------
@@ -146,7 +160,7 @@ def attendance():
 def download_absent():
     global hall_df
 
-    if hall_df is None:
+    if hall_df is None or hall_df.empty:
         return "No attendance data"
 
     absent_df = hall_df[hall_df["Present"] == "A"]

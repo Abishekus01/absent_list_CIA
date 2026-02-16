@@ -8,9 +8,13 @@
 <h2>Upload Master Excel</h2>
 
 <form method="post" enctype="multipart/form-data">
-  <input type="file" name="file" accept=".xlsx" required>
+  <input type="file" name="file" accept=".xlsx,.xls" required>
   <button type="submit">Upload</button>
 </form>
+
+<a href="{{ url_for('dashboard') }}">
+  <button>Back</button>
+</a>
 
 </body>
 </html>

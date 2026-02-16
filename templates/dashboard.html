@@ -2,52 +2,70 @@
 <html>
 <head>
   <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<h2>Dashboard</h2>
+<div class="container">
 
-{% if not data_loaded %}
-  <p style="color:red;">⚠ Upload Master Excel first</p>
-  <a href="{{ url_for('upload_master') }}">
-    <button>Upload Master Sheet</button>
-  </a>
-{% else %}
+  <h2>Exam Hall Dashboard</h2>
 
-  <p style="color:green;">✔ Master sheet loaded</p>
+  {% if not data_loaded %}
+    <p class="error">⚠ Upload Master Excel first</p>
 
-  <form action="{{ url_for('hall_allocation') }}" method="post">
+    <a href="{{ url_for('upload_master') }}">
+      <button class="btn">Upload Master Sheet</button>
+    </a>
 
-    <label>Hall Number:</label>
-    <input type="text" name="hall" required><br><br>
+  {% else %}
 
-    <label>Exam Date:</label>
-    <input type="date" name="date" required><br><br>
+    <p class="success">✔ Master sheet loaded</p>
 
-    <label>Slot:</label>
-    <select name="slot" required>
-      <option value="9:15">9:15</option>
-      <option value="11:15">11:15</option>
-      <option value="1:15">1:15</option>
-      <option value="3:15">3:15</option>
-    </select><br><br>
+    <form action="{{ url_for('hall_allocation') }}" method="post" class="form-box">
 
-    <label>Select Subject:</label>
-    <select name="subject" required>
-      {% if subjects %}
-        {% for sub in subjects %}
-          <option value="{{ sub }}">{{ sub }}</option>
-        {% endfor %}
-      {% else %}
-        <option>No subjects found</option>
-      {% endif %}
-    </select><br><br>
+      <div class="form-row">
+        <label>Hall Number:</label>
+        <input type="text" name="hall" required>
+      </div>
 
-    <button type="submit">Generate Hall Plan</button>
+      <div class="form-row">
+        <label>Exam Date:</label>
+        <input type="date" name="date" required>
+      </div>
 
-  </form>
+      <div class="form-row">
+        <label>Slot:</label>
+        <select name="slot" required>
+          <option value="9:15">9:15</option>
+          <option value="11:15">11:15</option>
+          <option value="1:15">1:15</option>
+          <option value="3:15">3:15</option>
+        </select>
+      </div>
 
-{% endif %}
+      <div class="form-row">
+        <label>Select Subjects (Multi-select):</label>
+
+        <select name="subject" multiple required size="6" class="multi-select">
+          {% if subjects %}
+            {% for sub in subjects %}
+              <option value="{{ sub }}">{{ sub }}</option>
+            {% endfor %}
+          {% else %}
+            <option>No subjects found</option>
+          {% endif %}
+        </select>
+
+        <small>Hold CTRL to select multiple subjects</small>
+      </div>
+
+      <button type="submit" class="btn">Generate Hall Plan</button>
+
+    </form>
+
+  {% endif %}
+
+</div>
 
 </body>
 </html>
