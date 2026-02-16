@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attendance</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container" style="width:90%">
+  <h2>Exam Attendance Sheet</h2>
+
+  <p><b>Date:</b> {{ data.exam_date }}</p>
+  <p><b>Hall:</b> {{ data.hall }}</p>
+  <p><b>Slot:</b> {{ data.slot }}</p>
+  <p><b>Subject:</b> {{ data.subject }} ({{ data.subject_code }})</p>
+  <p><b>Staff:</b> {{ data.staff_name }} ({{ data.staff_id }})</p>
+
+  <form method="POST">
+    <table>
+      <tr>
+        <th>Present</th>
+        <th>Reg No</th>
+        <th>Name</th>
+        <th>Dept</th>
+        <th>Sem</th>
+        <th>Section</th>
+      </tr>
+
+      {% for s in students %}
+      <tr>
+        <td><input type="checkbox" name="present" value="{{ s.reg }}"></td>
+        <td>{{ s.reg }}</td>
+        <td>{{ s.name }}</td>
+        <td>{{ s.dept }}</td>
+        <td>{{ s.sem }}</td>
+        <td>{{ s.section }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <button type="submit">Submit Attendance</button>
+  </form>
+
+  {% if data.absent_count is defined %}
+    <h3>Present: {{ data.present_count }} | Absent: {{ data.absent_count }}</h3>
+
+    <h3>Absent Students</h3>
+    <table>
+      <tr>
+        <th>Reg No</th>
+        <th>Name</th>
+      </tr>
+      {% for a in data.absent %}
+      <tr>
+        <td>{{ a.reg }}</td>
+        <td>{{ a.name }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <a href="/download_absent"><button>Download Absent CSV</button></a>
+  {% endif %}
+
+  <a href="/dashboard"><button>Back</button></a>
+</div>
+
+</body>
+</html>
