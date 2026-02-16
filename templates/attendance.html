@@ -1,55 +1,114 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Attendance</title>
+  <title>Attendance Sheet</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<h2>Exam Attendance Sheet</h2>
+<div class="container">
 
-<p><b>Hall:</b> {{ data.hall }}</p>
-<p><b>Date:</b> {{ data.exam_date }}</p>
-<p><b>Slot:</b> {{ data.slot }}</p>
+  <h2>Exam Attendance Sheet</h2>
 
-<form method="post">
+  <!-- 📌 EXAM METADATA -->
+  <div class="meta">
+    <p><b>Date:</b> {{ data.exam_date }}</p>
+    <p><b>Hall:</b> {{ data.hall }}</p>
+    <p><b>Slot:</b> {{ data.slot }}</p>
+  </div>
 
-<table border="1">
-  <tr>
-    {% for col in columns %}
-      <th>{{ col }}</th>
-    {% endfor %}
-    <th>Absent</th>
-  </tr>
+  <form method="POST">
 
-  {% for row in tables %}
-  <tr>
-    {% for col in columns %}
-      <td>{{ row[col] }}</td>
-    {% endfor %}
-    <td>
-      <input type="checkbox" name="present_{{ loop.index0 }}" value="A">
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+    <!-- 📊 MAIN ATTENDANCE TABLE -->
+    <div class="table-wrapper">
+      <table>
+        <tr>
+          <th>Present</th>
+          <th>Seat No</th>
+          <th>Reg No</th>
+          <th>Name</th>
+          <th>Course</th>
+          <th>Status</th>
+        </tr>
 
-<br>
-<button type="submit">Save Attendance</button>
+        {% set present_count = 0 %}
+        {% set absent_count = 0 %}
+        {% set absent_list = [] %}
 
-</form>
+        {% for s in tables %}
+        <tr {% if s.Present == 'A' %} style="background:#3f1d1d; color:#f87171;" {% endif %}>
+          
+          <td>
+            <input type="checkbox"
+                   name="present_{{ loop.index0 }}"
+                   value="A"
+                   {% if s.Present == 'A' %} checked {% endif %}>
+          </td>
 
-<br>
+          <td>{{ s['Seat No'] }}</td>
+          <td>{{ s['Reg No'] }}</td>
+          <td>{{ s['Name'] }}</td>
+          <td>{{ s['Course'] }}</td>
 
-<a href="{{ url_for('download_absent') }}">
-  <button>Download Absent XLSX</button>
-</a>
+          <td>
+            {% if s.Present == 'A' %}
+              ❌ Absent
+              {% set absent_count = absent_count + 1 %}
+              {% set _ = absent_list.append(s) %}
+            {% else %}
+              ✔ Present
+              {% set present_count = present_count + 1 %}
+            {% endif %}
+          </td>
 
-<br><br>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
 
-<a href="{{ url_for('dashboard') }}">
-  <button>Back to Dashboard</button>
-</a>
+    <button type="submit">Save Attendance</button>
+  </form>
+
+  <!-- 📊 SUMMARY -->
+  <h3>Present: {{ present_count }} | Absent: {{ absent_count }}</h3>
+
+  <!-- 🚨 ABSENT STUDENTS TABLE -->
+  {% if absent_count > 0 %}
+  <h3>Absent Students (Staff Verification)</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <tr>
+        <th>Seat No</th>
+        <th>Reg No</th>
+        <th>Name</th>
+        <th>Course</th>
+      </tr>
+
+      {% for a in absent_list %}
+      <tr>
+        <td>{{ a['Seat No'] }}</td>
+        <td>{{ a['Reg No'] }}</td>
+        <td>{{ a['Name'] }}</td>
+        <td>{{ a['Course'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- 📥 DOWNLOAD BUTTON -->
+  <div class="action-buttons">
+    <a href="{{ url_for('download_absent') }}">
+      <button type="button">Download Absent XLSX</button>
+    </a>
+
+    <a href="{{ url_for('dashboard') }}">
+      <button type="button">Back</button>
+    </a>
+  </div>
+
+</div>
 
 </body>
 </html>
