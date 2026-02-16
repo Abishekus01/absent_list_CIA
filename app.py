@@ -104,31 +104,31 @@ def attendance():
 def download_absent():
     global hall_df
 
-    absent_rows = []
+    if hall_df is None:
+        return "No attendance data"
 
-    for _, row in hall_df.iterrows():
-        for col in hall_df.columns:
-            if "Present" in col and row[col] == "A":
-                sub = col.replace("_Present", "")
-                reg = row[f"{sub}_Reg"]
-                name = row[f"{sub}_Name"]
-                course = row[f"{sub}_Course"]
-
-                absent_rows.append({
-                    "Reg No": reg,
-                    "Name": name,
-                    "Course": course,
-                    "Hall": row["Hall"],
-                    "Date": row["Date"],
-                    "Slot": row["Slot"]
-                })
-
-    absent_df = pd.DataFrame(absent_rows)
+    absent_df = hall_df[hall_df["Present"] == "A"]
 
     file_path = os.path.join(UPLOAD_FOLDER, "absent_list.xlsx")
     absent_df.to_excel(file_path, index=False)
 
     return send_file(file_path, as_attachment=True)
+
+# ---------------- DASHBOARD ----------------
+@app.route("/dashboard")
+def dashboard():
+    global master_df
+
+    subjects = []
+    if master_df is not None:
+        subjects = sorted(master_df["Course Code"].dropna().unique())
+
+    return render_template(
+        "dashboard.html",
+        subjects=subjects,
+        data_loaded=(master_df is not None)
+    )
+
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
