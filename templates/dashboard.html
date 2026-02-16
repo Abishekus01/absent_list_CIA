@@ -1,3 +1,10 @@
+{% if subjects %}
+    {% for code, sub in subjects.items() %}
+        <option value="{{ code }}">{{ sub }}</option>
+    {% endfor %}
+{% else %}
+    <option>No subjects loaded</option>
+{% endif %}
 <!DOCTYPE html>
 <html>
 <head>

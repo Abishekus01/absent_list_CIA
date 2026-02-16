@@ -20,7 +20,16 @@ def login():
 # ---------------- DASHBOARD ----------------
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    global master_df
+
+    subjects = {}
+
+    if master_df is not None:
+        unique_subs = master_df["Course Code"].unique()
+        for sub in unique_subs:
+            subjects[sub] = sub
+
+    return render_template("dashboard.html", subjects=subjects)
 
 # ---------------- UPLOAD MASTER EXCEL ----------------
 @app.route("/upload_master", methods=["GET", "POST"])
