@@ -47,56 +47,38 @@ def upload_master():
     return render_template("upload_master.html")
 
 # ---------------- HALL ALLOCATION ----------------
-@app.route("/hall_allocation", methods=["GET", "POST"])
+@app.route("/hall_allocation", methods=["POST"])
 def hall_allocation():
     global master_df, hall_df
 
     if master_df is None:
-        return "Upload master sheet first"
+        return redirect(url_for("upload_master"))
 
-    if request.method == "POST":
-        hall_number = request.form["hall"]
-        exam_date = request.form["date"]
-        slot = request.form["slot"]
+    hall_number = request.form["hall"]
+    exam_date = request.form["date"]
+    slot = request.form["slot"]
+    subject = request.form["subject"]
 
-        # Separate subjects
-        subjects = master_df["Course Code"].unique()
+    subject_df = master_df[master_df["Course Code"] == subject].reset_index(drop=True)
 
-        subject_groups = []
-        for sub in subjects:
-            subject_groups.append(master_df[master_df["Course Code"] == sub].reset_index(drop=True))
+    hall_data = []
 
-        # Alternate seating (column-wise)
-        max_len = max(len(g) for g in subject_groups)
+    for i in range(len(subject_df)):
+        hall_data.append({
+            "Seat No": i + 1,
+            "Reg No": subject_df.iloc[i]["Reg No"],
+            "Name": subject_df.iloc[i]["Name"],
+            "Course": subject,
+            "Present": "P",
+            "Hall": hall_number,
+            "Date": exam_date,
+            "Slot": slot
+        })
 
-        hall_data = []
+    hall_df = pd.DataFrame(hall_data)
 
-        for i in range(max_len):
-            row = {"Seat No": i + 1}
-            for col, group in enumerate(subject_groups):
-                if i < len(group):
-                    row[f"Sub{col+1}_Reg"] = group.iloc[i]["Reg No"]
-                    row[f"Sub{col+1}_Name"] = group.iloc[i]["Name"]
-                    row[f"Sub{col+1}_Course"] = group.iloc[i]["Course Code"]
-                    row[f"Sub{col+1}_Present"] = "P"
-                else:
-                    row[f"Sub{col+1}_Reg"] = ""
-                    row[f"Sub{col+1}_Name"] = ""
-                    row[f"Sub{col+1}_Course"] = ""
-                    row[f"Sub{col+1}_Present"] = ""
+    return redirect(url_for("attendance"))
 
-            hall_data.append(row)
-
-        hall_df = pd.DataFrame(hall_data)
-
-        # Save hall info
-        hall_df["Hall"] = hall_number
-        hall_df["Date"] = exam_date
-        hall_df["Slot"] = slot
-
-        return redirect(url_for("attendance"))
-
-    return render_template("hall_allocation.html")
 
 # ---------------- ATTENDANCE PAGE ----------------
 @app.route("/attendance", methods=["GET", "POST"])
