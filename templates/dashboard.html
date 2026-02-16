@@ -1,45 +1,53 @@
-{% if subjects %}
-    {% for code, sub in subjects.items() %}
-        <option value="{{ code }}">{{ sub }}</option>
-    {% endfor %}
-{% else %}
-    <option>No subjects loaded</option>
-{% endif %}
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Exam Setup - SASTRA Portal</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Dashboard</title>
 </head>
 <body>
 
-<div class="container">
-  <h2>Exam Hall Setup</h2>
+<h2>Dashboard</h2>
 
-  <form method="POST">
+{% if not data_loaded %}
+  <p style="color:red;">⚠ Upload Master Excel first</p>
+  <a href="{{ url_for('upload_master') }}">
+    <button>Upload Master Sheet</button>
+  </a>
+{% else %}
 
-    <input type="date" name="exam_date" required>
+  <p style="color:green;">✔ Master sheet loaded</p>
 
-    <input type="text" name="hall" placeholder="Hall Number (Eg: A201)" required>
+  <form action="{{ url_for('hall_allocation') }}" method="post">
 
-    <!-- SUBJECT DROPDOWN -->
-    <select name="subject_code" required>
-      <option value="">Select Subject</option>
-      {% for code, sub in subjects.items() %}
-        <option value="{{ code }}">{{ sub.name }} ({{ code }}) - Slot {{ sub.slot }}</option>
-      {% endfor %}
-    </select>
+    <label>Hall Number:</label>
+    <input type="text" name="hall" required><br><br>
 
-    <input type="text" name="staff_name" placeholder="Staff Name" required>
-    <input type="text" name="staff_id" placeholder="Staff ID" required>
+    <label>Exam Date:</label>
+    <input type="date" name="date" required><br><br>
 
-    <button type="submit">Generate Attendance Sheet</button>
+    <label>Slot:</label>
+    <select name="slot" required>
+      <option value="9:15">9:15</option>
+      <option value="11:15">11:15</option>
+      <option value="1:15">1:15</option>
+      <option value="3:15">3:15</option>
+    </select><br><br>
+
+    <label>Select Subject:</label>
+    <select name="subject" required>
+      {% if subjects %}
+        {% for sub in subjects %}
+          <option value="{{ sub }}">{{ sub }}</option>
+        {% endfor %}
+      {% else %}
+        <option>No subjects found</option>
+      {% endif %}
+    </select><br><br>
+
+    <button type="submit">Generate Hall Plan</button>
+
   </form>
 
-  <div class="action-buttons">
-    <a href="/logout"><button type="button">Logout</button></a>
-  </div>
-</div>
+{% endif %}
 
 </body>
 </html>

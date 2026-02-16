@@ -18,33 +18,31 @@ def login():
     return render_template("login.html")
 
 # ---------------- DASHBOARD ----------------
-@app.route("/dashboard")
-def dashboard():
-    global master_df
-
-    subjects = {}
-
-    if master_df is not None:
-        unique_subs = master_df["Course Code"].unique()
-        for sub in unique_subs:
-            subjects[sub] = sub
-
-    return render_template("dashboard.html", subjects=subjects)
-
-# ---------------- UPLOAD MASTER EXCEL ----------------
 @app.route("/upload_master", methods=["GET", "POST"])
 def upload_master():
     global master_df
 
     if request.method == "POST":
-        file = request.files["file"]
-        if file:
-            path = os.path.join(UPLOAD_FOLDER, file.filename)
-            file.save(path)
+        file = request.files.get("file")
 
-            master_df = pd.read_excel(path)
+        if not file or file.filename == "":
+            return "No file selected"
 
-            return redirect(url_for("hall_allocation"))
+        path = os.path.join(UPLOAD_FOLDER, file.filename)
+        file.save(path)
+
+        master_df = pd.read_excel(path)
+
+        # 🔴 CLEAN COLUMN NAMES (VERY IMPORTANT)
+        master_df.columns = master_df.columns.str.strip()
+
+        required_cols = ["Reg No", "Name", "Dept", "Year", "Semester", "Section", "Course Code"]
+
+        for col in required_cols:
+            if col not in master_df.columns:
+                return f"Missing column in Excel: {col}"
+
+        return redirect(url_for("dashboard"))
 
     return render_template("upload_master.html")
 
