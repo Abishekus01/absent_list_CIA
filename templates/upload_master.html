@@ -1,20 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Upload Master</title>
+  <title>Upload Master Sheet</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<h2>Upload Master Excel</h2>
+<div class="container">
 
-<form method="post" enctype="multipart/form-data">
-  <input type="file" name="file" accept=".xlsx,.xls" required>
-  <button type="submit">Upload</button>
-</form>
+  <h2>Upload Master Excel</h2>
 
-<a href="{{ url_for('dashboard') }}">
-  <button>Back</button>
-</a>
+  <div class="meta">
+    <p>📄 Please upload the master student sheet in Excel format</p>
+    <p>Required Columns:</p>
+    <p><b>Reg No, Name, Dept, Year, Semester, Section, Course Code</b></p>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="form-box">
+
+    <input type="file" name="file" accept=".xlsx,.xls" required>
+
+    <button type="submit">Upload Master Sheet</button>
+
+  </form>
+
+  <div class="action-buttons">
+    <a href="{{ url_for('dashboard') }}">
+      <button type="button">Back to Dashboard</button>
+    </a>
+  </div>
+
+</div>
 
 </body>
 </html>
