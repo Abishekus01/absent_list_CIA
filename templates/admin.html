@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Dashboard</h2>
+    <p>Welcome {{ user }}</p>
+
+    <div class="table-box">
+      <table>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+        </tr>
+        <tr>
+          <td>Manage Staff</td>
+          <td>Enabled</td>
+        </tr>
+        <tr>
+          <td>Manage Timetable</td>
+          <td>Enabled</td>
+        </tr>
+      </table>
+    </div>
+
+    <a href="/logout"><button>Logout</button></a>
+  </div>
+</body>
+</html>

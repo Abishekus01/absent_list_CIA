@@ -1,0 +1,69 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #0b0f19;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Card UI */
+.container {
+  background: #111827;
+  padding: 30px;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 0 25px #2563eb;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #60a5fa;
+}
+
+select, input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: #1f2937;
+  color: white;
+}
+
+button {
+  width: 95%;
+  padding: 10px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 10px #2563eb;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.table-box {
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #2563eb;
+  padding: 8px;
+}
+
+.error {
+  color: #f87171;
+}

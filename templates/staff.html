@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Staff Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Staff Dashboard</h2>
+    <p>Welcome {{ user }}</p>
+
+    <div class="table-box">
+      <table>
+        <tr>
+          <th>Your Slot</th>
+        </tr>
+        <tr>
+          <td>{{ slot }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <a href="/logout"><button>Logout</button></a>
+  </div>
+</body>
+</html>
+

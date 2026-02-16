@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SASTRA Portal Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>SASTRA Portal Login</h2>
+
+    <form method="POST">
+      <select name="role">
+        <option value="admin">Admin</option>
+        <option value="staff">Staff</option>
+      </select>
+
+      <input type="text" name="loginId" placeholder="ID" required>
+      <input type="password" name="loginPass" placeholder="Password" required>
+
+      <button type="submit">Login</button>
+
+      {% if error %}
+        <p class="error">{{ error }}</p>
+      {% endif %}
+    </form>
+  </div>
+</body>
+</html>
