@@ -131,3 +131,69 @@ th, td {
     padding: 15px;
   }
 }
+
+/* 🔐 LOGIN PAGE STYLING */
+
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-card {
+  background: #111827;
+  padding: 40px;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 0 25px #2563eb;
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 25px;
+  color: #60a5fa;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 15px 0;
+  border: none;
+  border-radius: 8px;
+  background: #1f2937;
+  color: white;
+  font-size: 14px;
+}
+
+/* 🔽 Bigger dropdown font for role */
+.role-select {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* 🧾 Labels */
+.login-card label {
+  display: block;
+  text-align: left;
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: #9ca3af;
+}
+
+/* 🔘 Login Button */
+.login-card button {
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 10px #2563eb;
+}
+
+.login-card button:hover {
+  background: #1d4ed8;
+}
