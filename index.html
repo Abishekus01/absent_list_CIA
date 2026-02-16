@@ -1,65 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Exam Hall Attendance System</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Login</title>
 </head>
 <body>
 
-<h2>Exam Hall Attendance (Admin / Staff Only)</h2>
+<h3>Login</h3>
 
-<!-- Exam Details -->
-<div class="box">
-  <label>Exam Date:</label>
-  <input type="date" id="examDate">
+<select id="role">
+  <option value="admin">Admin</option>
+  <option value="staff">Staff</option>
+</select>
 
-  <label>Hall Number:</label>
-  <input type="text" id="hallNo">
+<input type="text" id="loginId" placeholder="ID">
+<input type="password" id="loginPass" placeholder="Password">
 
-  <label>Slot:</label>
-  <select id="slot">
-    <option>9:15 - 10:45</option>
-    <option>11:15 - 12:45</option>
-    <option>1:15 - 2:45</option>
-    <option>3:15 - 4:45</option>
-  </select>
-</div>
-
-<!-- Staff Details -->
-<div class="box">
-  <label>Staff Name:</label>
-  <input type="text" id="staffName">
-
-  <label>Staff ID:</label>
-  <input type="text" id="staffId">
-</div>
-
-<!-- Subject Selection -->
-<div class="box">
-  <label>Subject:</label>
-  <select id="subject" onchange="loadStudents()">
-    <option value="">-- Select Subject --</option>
-    <option value="CS301">CS301 - Operating Systems</option>
-    <option value="CS302">CS302 - DBMS</option>
-  </select>
-</div>
-
-<!-- Attendance Table -->
-<table id="attendanceTable">
-  <thead>
-    <tr>
-      <th>Reg No</th>
-      <th>Name</th>
-      <th>Dept</th>
-      <th>Sem</th>
-      <th>Section</th>
-      <th>Present</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
-<button onclick="downloadAbsent()">Download Absent List (CSV)</button>
+<button onclick="login()">Login</button>
+<p id="error"></p>
 
 <script src="script.js"></script>
 </body>

@@ -1,58 +1,27 @@
-// 1. Sample Master Sheet
-const students = [
-  {reg: "CS001", name: "Arun", dept: "CSE", sem: 5, sec: "A", subject: "CS301"},
-  {reg: "CS002", name: "Bala", dept: "CSE", sem: 5, sec: "A", subject: "CS301"},
-  {reg: "CS003", name: "Divya", dept: "CSE", sem: 5, sec: "B", subject: "CS302"},
-  {reg: "CS004", name: "Karthi", dept: "CSE", sem: 5, sec: "B", subject: "CS302"}
+const admins = [
+  { id: "admin01", pass: "admin123" }
 ];
 
-let absentList = [];
+const staff = [
+  { id: "staff101", pass: "staff123", slot: "9:15 - 10:45" }
+];
 
-function loadStudents() {
-  const subject = document.getElementById("subject").value;
-  const tableBody = document.querySelector("#attendanceTable tbody");
-  tableBody.innerHTML = "";
-  absentList = [];
+function login() {
+  const role = role.value;
+  const id = loginId.value;
+  const pass = loginPass.value;
 
-  students
-    .filter(s => s.subject === subject)
-    .forEach(s => {
-      const row = document.createElement("tr");
-
-      row.innerHTML = `
-        <td>${s.reg}</td>
-        <td>${s.name}</td>
-        <td>${s.dept}</td>
-        <td>${s.sem}</td>
-        <td>${s.sec}</td>
-        <td>
-          <input type="checkbox" checked
-            onchange="markAbsent(this, '${s.reg}', '${s.name}')">
-        </td>
-      `;
-      tableBody.appendChild(row);
-    });
-}
-
-// 9. Absent Students List
-function markAbsent(cb, reg, name) {
-  if (!cb.checked) {
-    absentList.push({reg, name});
-  } else {
-    absentList = absentList.filter(s => s.reg !== reg);
+  if (role === "admin") {
+    const a = admins.find(x => x.id === id && x.pass === pass);
+    if (a) window.location.href = "admin.html";
+    else error.innerText = "Invalid Admin Login";
   }
-}
 
-// 10. Download CSV
-function downloadAbsent() {
-  let csv = "Reg No,Name\n";
-  absentList.forEach(s => {
-    csv += `${s.reg},${s.name}\n`;
-  });
-
-  const blob = new Blob([csv], { type: "text/csv" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "Absent_List.csv";
-  link.click();
+  if (role === "staff") {
+    const s = staff.find(x => x.id === id && x.pass === pass);
+    if (s) {
+      localStorage.setItem("slot", s.slot);
+      window.location.href = "staff.html";
+    } else error.innerText = "Invalid Staff Login";
+  }
 }
